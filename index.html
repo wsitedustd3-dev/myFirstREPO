@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TripPick — 원클릭 여행 큐레이션</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <script>
+    (function(){
+      try{
+        var t = localStorage.getItem('trippick-theme');
+        if(t==='dark') document.documentElement.classList.add('dark-mode');
+        else document.documentElement.classList.remove('dark-mode');
+      }catch(e){}
+    })();
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/app-ui.css" />
+</head>
+<body class="app-mode">
+
+  <!-- ══════════════════════════════════════════
+       📱 상단 상태바 (Top Status Bar) — 항상 고정
+       ══════════════════════════════════════════ -->
+  <header class="app-statusbar" id="appStatusbar">
+    <span class="sb-time" id="sbTime">9:41</span>
+    <a href="#" class="sb-logo" id="sbLogoBtn">
+      <span class="logo-icon">✈</span>
+      <span>Trip<span class="accent">Pick</span></span>
+    </a>
+    <div class="sb-right">
+      <button class="sb-icon-btn" id="themeToggleApp" title="테마 변경">
+        <span class="theme-icon-dark">🌙</span>
+        <span class="theme-icon-light">☀️</span>
+      </button>
+      <button class="sb-icon-btn sb-notif" id="sbNotif">
+        <i class="fas fa-bell"></i>
+        <span class="notif-badge">3</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       📱 앱 탭 콘텐츠 영역
+       ══════════════════════════════════════════ -->
+  <main class="app-main" id="appMain">
+
+    <!-- ── TAB: 홈 (서비스 소개 + 요금제) ── -->
+    <div class="app-tab" id="tab-home" data-tab="home">
+
+      <!-- ========== HERO ========== -->
+      <section class="hero" id="hero">
+        <div class="hero-video-wrap" id="heroVideoWrap">
+          <video class="hero-video hero-video-a" id="heroVidA" autoplay muted loop playsinline preload="auto">
+            <source src="videos/hero-travel.mp4" type="video/mp4">
+          </video>
+          <video class="hero-video hero-video-b" id="heroVidB" muted loop playsinline preload="none">
+            <source data-src="videos/hero-city.mp4" type="video/mp4">
+          </video>
+          <div class="hero-vignette"></div>
+          <div class="hero-video-overlay"></div>
+          <div class="hero-video-grid"></div>
+          <div class="hero-scanlines"></div>
+        </div>
+        <div class="hero-inner">
+          <div class="hero-content" data-aos="fade-right">
+            <div class="hero-badge">
+              <span class="badge-dot"></span>
+              새로운 여행 경험의 시작
+            </div>
+            <h1 class="hero-title">
+              고민은 <span class="gradient-text">TripPick</span>이,<br />
+              짐은 당신이.
+            </h1>
+            <p class="hero-sub">
+              탭 한 번으로 완성되는 맞춤형 여행 플래너.<br />
+              <strong>원클릭 큐레이션</strong>으로 여행의 모든 고민을 해결하세요.
+            </p>
+            <div class="hero-cta-wrap">
+              <div class="hero-cta-hint">
+                <span class="hint-dot"></span>
+                <span class="hint-text">↓&nbsp; 클릭하면 바로 시작돼요</span>
+                <span class="hint-dot"></span>
+              </div>
+              <a href="#" class="btn btn-hero-cta" id="heroCta">
+                <i class="fas fa-rocket"></i> 무료로 플래닝 시작하기
+                <span class="btn-arrow">→</span>
+              </a>
+            </div>
+            <div class="hero-trust">
+              <div class="trust-item">
+                <span class="trust-num" data-target="12">0</span><span class="trust-unit">만+</span>
+                <span class="trust-label">플래닝 완료</span>
+              </div>
+              <div class="trust-sep"></div>
+              <div class="trust-item">
+                <span class="trust-num" data-target="98">0</span><span class="trust-unit">%</span>
+                <span class="trust-label">만족도</span>
+              </div>
+              <div class="trust-sep"></div>
+              <div class="trust-item">
+                <span class="trust-num" data-target="3">0</span><span class="trust-unit">초</span>
+                <span class="trust-label">평균 플래닝</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-visual" data-aos="fade-left">
+            <div class="phone-mockup">
+              <div class="phone-frame">
+                <div class="phone-screen">
+                  <div class="app-header">
+                    <span class="app-time">9:41</span>
+                    <span class="app-logo">TripPick</span>
+                    <span class="app-notif"><i class="fas fa-bell"></i></span>
+                  </div>
+                  <div class="app-greeting">
+                    <p>안녕하세요, 최하늘님 👋</p>
+                    <small>어디로 떠나볼까요?</small>
+                  </div>
+                  <div class="app-search-bar">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>목적지 또는 테마 검색</span>
+                  </div>
+                  <div class="app-filters">
+                    <span class="filter-chip active">🌊 바다</span>
+                    <span class="filter-chip">🏔️ 산</span>
+                    <span class="filter-chip">🏙️ 도시</span>
+                    <span class="filter-chip">🌳 자연</span>
+                  </div>
+                  <div class="app-cards">
+                    <div class="app-card featured">
+                      <div class="card-img card-img-1">
+                        <span class="card-badge">🔥 인기</span>
+                      </div>
+                      <div class="card-info">
+                        <p class="card-title">제주 3박 4일</p>
+                        <p class="card-sub">₩ 280,000 · 숙소+식당+액티비티</p>
+                        <div class="card-tags">
+                          <span>🌊 해수욕</span>
+                          <span>🍊 로컬푸드</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="app-card">
+                      <div class="card-img card-img-2">
+                        <span class="card-badge mystery">🎲 미스터리</span>
+                      </div>
+                      <div class="card-info">
+                        <p class="card-title">랜덤 트립</p>
+                        <p class="card-sub">예산만 설정하면 OK!</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="app-bottom-nav">
+                    <span class="active"><i class="fas fa-home"></i></span>
+                    <span><i class="fas fa-search"></i></span>
+                    <span class="btn-center"><i class="fas fa-plus"></i></span>
+                    <span><i class="fas fa-heart"></i></span>
+                    <span><i class="fas fa-user"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="phone-shadow"></div>
+            </div>
+            <div class="float-card float-card-1">
+              <span class="float-icon">🎯</span>
+              <div><p>맞춤 큐레이션</p><small>AI 최적화 완료</small></div>
+            </div>
+            <div class="float-card float-card-2">
+              <span class="float-icon">⚡</span>
+              <div><p>즉시 예약 가능</p><small>3초 플래닝</small></div>
+            </div>
+            <div class="float-card float-card-3">
+              <span class="float-icon">✅</span>
+              <div><p>검증된 리뷰</p><small>Vibe Check</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-scroll">
+          <span>스크롤</span>
+          <div class="scroll-line"></div>
+        </div>
+      </section><!-- /#hero -->
+
+      <!-- 홈 탭 스크롤 콘텐츠 (서비스 소개 + 요금제 등) -->
+      <div id="home-scroll-content">
+
+  <!-- ========== FEATURES ========== -->
+  <section class="features" id="features">
+    <div class="section-container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">핵심 기능</span>
+        <h2>여행의 모든 고민을<br /><span class="gradient-text">단 하나의 앱</span>으로</h2>
+        <p>TripPick의 4가지 핵심 메커니즘으로<br />당신만의 완벽한 여행을 설계하세요.</p>
+      </div>
+      <div class="features-grid">
+
+        <div class="feature-card" data-aos="fade-up" data-delay="0">
+          <div class="feature-icon-wrap icon-blue">
+            <i class="fas fa-sliders-h"></i>
+          </div>
+          <h3>맞춤형 필터링</h3>
+          <p>장소·날짜·경비·동행·테마를 입력하면 TripPick이 수천 가지 조합 중 당신에게 맞는 최적 플랜을 즉시 생성합니다.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> 5가지 핵심 필터 설정</li>
+            <li><i class="fas fa-check"></i> AI 기반 최적 조합 생성</li>
+            <li><i class="fas fa-check"></i> 실시간 가용 여부 확인</li>
+          </ul>
+          <div class="feature-tag">🎯 스마트 매칭</div>
+        </div>
+
+        <div class="feature-card feature-card-highlight" data-aos="fade-up" data-delay="100">
+          <div class="feature-icon-wrap icon-purple">
+            <i class="fas fa-dice"></i>
+          </div>
+          <h3>미스터리 트립 🎲</h3>
+          <p>예산만 설정하고 Go! 현재 위치에서 가장 의외의 장소와 숙소를 매칭하는 완전 랜덤 모드로 설레는 여행을 경험하세요.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> 예산 설정만으로 출발</li>
+            <li><i class="fas fa-check"></i> 현위치 기반 서프라이즈</li>
+            <li><i class="fas fa-check"></i> 고수익 이색 장소 발굴</li>
+          </ul>
+          <div class="feature-tag">🎲 서프라이즈 모드</div>
+  
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-delay="200">
+          <div class="feature-icon-wrap icon-green">
+            <i class="fas fa-route"></i>
+          </div>
+          <h3>스마트 동선 엔진</h3>
+          <p>도보·자가용·대중교통 선택에 따라 거리를 자동 계산하고 최적 동선을 설계합니다. 도보 시 반경 1km 이내 자동 구성.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> 3가지 이동 수단 지원</li>
+            <li><i class="fas fa-check"></i> 자동 거리 계산</li>
+            <li><i class="fas fa-check"></i> 반경 설정 가능</li>
+          </ul>
+          <div class="feature-tag">🚶 동선 최적화</div>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-delay="300">
+          <div class="feature-icon-wrap icon-orange">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+          <h3>부분 교체 (Reroll)</h3>
+          <p>마음에 안 드는 식당만 터치하면 현재 동선 내 다른 검증된 장소로 즉시 변경. 식당 외 모든 장소도 교체 가능합니다.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> 원터치 장소 교체</li>
+            <li><i class="fas fa-check"></i> 동선 유지 기반 교체</li>
+            <li><i class="fas fa-check"></i> 검증된 대안 즉시 제공</li>
+          </ul>
+          <div class="feature-tag">🔄 즉시 교체</div>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-delay="400">
+          <div class="feature-icon-wrap icon-red">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <h3>예약 통합 장바구니</h3>
+          <p>"이 일정 확정하기" 버튼 하나로 숙소·식당(캐치테이블/네이버예약)·액티비티를 한 번에 결제 또는 예약 대행합니다.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> 원클릭 통합 결제</li>
+            <li><i class="fas fa-check"></i> 캐치테이블·네이버 연동</li>
+            <li><i class="fas fa-check"></i> 개별 예약 번거로움 제거</li>
+          </ul>
+          <div class="feature-tag">🛒 원클릭 예약</div>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-delay="500">
+          <div class="feature-icon-wrap icon-teal">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>데이터 신뢰도 (Vibe Check)</h3>
+          <p>광고성 블로그가 아닌 실제 방문자 리뷰의 감성 키워드를 분석해 반영합니다. "조용한", "사진 잘 나오는" 등 키워드 일치율 적용.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> 실제 방문자 리뷰 분석</li>
+            <li><i class="fas fa-check"></i> 감성 키워드 매칭</li>
+            <li><i class="fas fa-check"></i> 광고 필터링 적용</li>
+          </ul>
+          <div class="feature-tag">✅ 신뢰도 검증</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section class="how-it-works" id="how">
+    <div class="section-container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">이용 방법</span>
+        <h2>단 <span class="gradient-text">3단계</span>면 충분해요</h2>
+        <p>복잡한 여행 계획은 이제 TripPick에게 맡기세요</p>
+      </div>
+      <div class="steps-wrapper">
+        <div class="steps-line"></div>
+
+        <!-- STEP 01 : 카드 왼쪽 -->
+        <div class="step" data-aos="fade-right" data-delay="0">
+          <div class="step-content">
+            <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <h3>조건 입력</h3>
+            <p>장소, 날짜, 경비, 동행인원, 테마를 선택하거나 예산만 입력하는 미스터리 모드로 시작하세요.</p>
+            <div class="step-tags">
+              <span>📍 목적지</span>
+              <span>📅 날짜</span>
+              <span>💰 예산</span>
+              <span>👥 인원</span>
+            </div>
+          </div>
+          <div class="step-num">01</div>
+          <div class="step-empty"></div>
+        </div>
+
+        <!-- STEP 02 : 카드 오른쪽 -->
+        <div class="step step-reverse" data-aos="fade-left" data-delay="150">
+          <div class="step-empty"></div>
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-icon"><i class="fas fa-magic"></i></div>
+            <h3>AI 플래닝</h3>
+            <p>TripPick이 수천 개의 검증된 데이터에서 최적의 조합을 자동으로 생성합니다. 3초면 완성.</p>
+            <div class="step-tags">
+              <span>🤖 AI 매칭</span>
+              <span>⚡ 3초 완성</span>
+              <span>✅ Vibe Check</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 03 : 카드 왼쪽 -->
+        <div class="step" data-aos="fade-right" data-delay="300">
+          <div class="step-content">
+            <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+            <h3>확정 & 예약</h3>
+            <p>마음에 안 드는 장소는 Reroll로 교체하고, "일정 확정하기" 버튼으로 모든 예약을 한 번에 완료하세요.</p>
+            <div class="step-tags">
+              <span>🔄 Reroll</span>
+              <span>🛒 통합 예약</span>
+              <span>🎉 출발!</span>
+            </div>
+          </div>
+          <div class="step-num">03</div>
+          <div class="step-empty"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== BUDGET TIER TABLE ========== -->
+  <section class="budget-tier-section">
+    <div class="section-container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">예산 가이드</span>
+        <h2>내 예산에 딱 맞는<br /><span class="gradient-text">여행 등급</span>을 골라보세요</h2>
+        <p>예산 범위별로 어떤 여행이 가능한지 한눈에 확인하세요</p>
+      </div>
+      <div class="tier-table-wrap" data-aos="fade-up" data-delay="100">
+        <!-- Header -->
+        <div class="tier-table-header">
+          <div class="tier-col tier-col-label">등급</div>
+          <div class="tier-col">예산 범위 <span class="tier-sub">1인 기준</span></div>
+          <div class="tier-col">여행 유형</div>
+          <div class="tier-col">숙소</div>
+          <div class="tier-col">식사</div>
+          <div class="tier-col tier-col-last">추천 코스</div>
+        </div>
+        <!-- Tier 1 -->
+        <div class="tier-row tier-economy" data-aos="fade-up" data-delay="150">
+          <div class="tier-col tier-col-label">
+            <span class="tier-badge tier-badge-economy">💚 알뜰</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-price">20 ~ 30만원</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-type">🌅 당일치기</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">게스트하우스<br/><span class="tier-detail-sub">도미토리 / 캡슐</span></span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">분식 · 편의점<br/><span class="tier-detail-sub">끼니당 ~8,000원</span></span>
+          </div>
+          <div class="tier-col tier-col-last">
+            <div class="tier-tags">
+              <span>🚶 도보 탐방</span>
+              <span>🍜 로컬 시장</span>
+              <span>📸 무료 명소</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tier 2 -->
+        <div class="tier-row tier-standard" data-aos="fade-up" data-delay="200">
+          <div class="tier-col tier-col-label">
+            <span class="tier-badge tier-badge-standard">💙 일반</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-price">30 ~ 50만원</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-type">🌙 1박 2일</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">모텔 · 펜션<br/><span class="tier-detail-sub">2~4인실</span></span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">일반 식당<br/><span class="tier-detail-sub">끼니당 ~15,000원</span></span>
+          </div>
+          <div class="tier-col tier-col-last">
+            <div class="tier-tags">
+              <span>🚌 대중교통</span>
+              <span>🍽️ 현지 맛집</span>
+              <span>🎡 유료 명소</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tier 3 -->
+        <div class="tier-row tier-comfort" data-aos="fade-up" data-delay="250">
+          <div class="tier-col tier-col-label">
+            <span class="tier-badge tier-badge-comfort">🟣 컴포트</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-price">50 ~ 200만원</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-type">🌙🌙 2박 3일</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">비즈니스 호텔<br/><span class="tier-detail-sub">조식 포함 가능</span></span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">맛집 · 카페<br/><span class="tier-detail-sub">끼니당 ~25,000원</span></span>
+          </div>
+          <div class="tier-col tier-col-last">
+            <div class="tier-tags">
+              <span>🚗 렌터카</span>
+              <span>🍷 레스토랑</span>
+              <span>🏄 액티비티</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tier 4 -->
+        <div class="tier-row tier-premium" data-aos="fade-up" data-delay="300">
+          <div class="tier-col tier-col-label">
+            <span class="tier-badge tier-badge-premium">🟠 프리미엄</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-price">200 ~ 300만원</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-type">🌙🌙🌙 3박 4일</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">특급 호텔<br/><span class="tier-detail-sub">오션뷰 / 스위트</span></span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">파인다이닝<br/><span class="tier-detail-sub">끼니당 ~50,000원</span></span>
+          </div>
+          <div class="tier-col tier-col-last">
+            <div class="tier-tags">
+              <span>🚁 이색 체험</span>
+              <span>🍾 오마카세</span>
+              <span>🏊 리조트</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tier 5 -->
+        <div class="tier-row tier-luxury" data-aos="fade-up" data-delay="350">
+          <div class="tier-col tier-col-label">
+            <span class="tier-badge tier-badge-luxury">👑 럭셔리</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-price">300만원 이상</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-type">✨ 프리미엄 투어</span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">럭셔리 리조트<br/><span class="tier-detail-sub">프라이빗 빌라</span></span>
+          </div>
+          <div class="tier-col">
+            <span class="tier-detail">미슐랭 레스토랑<br/><span class="tier-detail-sub">풀코스 다이닝</span></span>
+          </div>
+          <div class="tier-col tier-col-last">
+            <div class="tier-tags">
+              <span>🚢 크루즈</span>
+              <span>🌟 미슐랭</span>
+              <span>🎭 VIP 체험</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 등급 인디케이터 바 -->
+      <div class="tier-indicator-wrap" data-aos="fade-up" data-delay="400">
+        <div class="tier-indicator-label">
+          <span>💰 예산이 클수록</span>
+          <span>더 풍요로운 여행 ✨</span>
+        </div>
+        <div class="tier-indicator-bar">
+          <div class="tib-seg tib-economy">알뜰</div>
+          <div class="tib-seg tib-standard">일반</div>
+          <div class="tib-seg tib-comfort">컴포트</div>
+          <div class="tib-seg tib-premium">프리미엄</div>
+          <div class="tib-seg tib-luxury">럭셔리</div>
+        </div>
+        <div class="tier-indicator-range">
+          <span>20만원</span>
+          <span>30만원</span>
+          <span>50만원</span>
+          <span>200만원</span>
+          <span>300만원+</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== INTERACTIVE DEMO ========== -->
+  <section class="demo-section" id="demo">
+    <div class="section-container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">인터랙티브 데모</span>
+        <h2>직접 <span class="gradient-text">체험</span>해보세요</h2>
+        <p>예산을 설정하면 그에 맞는 실제 코스가 생성됩니다</p>
+      </div>
+      <div class="demo-wrapper">
+        <div class="demo-panel" data-aos="fade-right">
+          <h3>✈️ 여행 플래너</h3>
+          <div class="demo-form">
+            <!-- 목적지 -->
+            <div class="form-group">
+              <label>📍 목적지
+                <span class="chip-group-hint">나라 → 지역 순서로 선택</span>
+              </label>
+
+              <!-- STEP 1: 나라 선택 -->
+              <div class="country-selector">
+                <div class="country-selector-label">🌍 나라 선택</div>
+                <div class="country-grid" id="country-grid">
+                  <button class="country-btn active" data-country="한국">
+                    <span class="country-flag">🇰🇷</span>
+                    <span class="country-name">대한민국</span>
+                  </button>
+                  <button class="country-btn" data-country="일본">
+                    <span class="country-flag">🇯🇵</span>
+                    <span class="country-name">일본</span>
+                  </button>
+                  <button class="country-btn" data-country="미국">
+                    <span class="country-flag">🇺🇸</span>
+                    <span class="country-name">미국</span>
+                  </button>
+                  <button class="country-btn" data-country="프랑스">
+                    <span class="country-flag">🇫🇷</span>
+                    <span class="country-name">프랑스</span>
+                  </button>
+                  <button class="country-btn" data-country="이탈리아">
+                    <span class="country-flag">🇮🇹</span>
+                    <span class="country-name">이탈리아</span>
+                  </button>
+                  <button class="country-btn" data-country="스페인">
+                    <span class="country-flag">🇪🇸</span>
+                    <span class="country-name">스페인</span>
+                  </button>
+                  <button class="country-btn" data-country="태국">
+                    <span class="country-flag">🇹🇭</span>
+                    <span class="country-name">태국</span>
+                  </button>
+                  <button class="country-btn" data-country="베트남">
+                    <span class="country-flag">🇻🇳</span>
+                    <span class="country-name">베트남</span>
+                  </button>
+                  <button class="country-btn" data-country="싱가포르">
+                    <span class="country-flag">🇸🇬</span>
+                    <span class="country-name">싱가포르</span>
+                  </button>
+                  <button class="country-btn" data-country="호주">
+                    <span class="country-flag">🇦🇺</span>
+                    <span class="country-name">호주</span>
+                  </button>
+                  <button class="country-btn" data-country="영국">
+                    <span class="country-flag">🇬🇧</span>
+                    <span class="country-name">영국</span>
+                  </button>
+                  <button class="country-btn" data-country="튀르키예">
+                    <span class="country-flag">🇹🇷</span>
+                    <span class="country-name">튀르키예</span>
+                  </button>
+                  <button class="country-btn" data-country="스위스">
+                    <span class="country-flag">🇨🇭</span>
+                    <span class="country-name">스위스</span>
+                  </button>
+                  <button class="country-btn" data-country="그리스">
+                    <span class="country-flag">🇬🇷</span>
+                    <span class="country-name">그리스</span>
+                  </button>
+                  <button class="country-btn" data-country="포르투갈">
+                    <span class="country-flag">🇵🇹</span>
+                    <span class="country-name">포르투갈</span>
+                  </button>
+                  <button class="country-btn" data-country="캐나다">
+                    <span class="country-flag">🇨🇦</span>
+                    <span class="country-name">캐나다</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- STEP 2: 지역 선택 패널 (나라별로 표시) -->
+              <div class="dest-region-panel" id="dest-region-panel">
+
+                <!-- 🇰🇷 대한민국 -->
+                <div class="region-block active" data-country="한국">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🏙️ 특별·광역시 <span class="dest-group-badge">7개 도시</span></div>
+                    <div class="chip-group" id="destination-chips">
+                      <span class="chip chip-city" data-val="서울">🏛️<span>서울</span></span>
+                      <span class="chip chip-city" data-val="인천">✈️<span>인천</span></span>
+                      <span class="chip chip-city" data-val="대전">🌳<span>대전</span></span>
+                      <span class="chip chip-city" data-val="대구">🍎<span>대구</span></span>
+                      <span class="chip chip-city" data-val="광주">🎨<span>광주</span></span>
+                      <span class="chip chip-city" data-val="울산">🏭<span>울산</span></span>
+                      <span class="chip chip-city" data-val="부산">🌊<span>부산</span></span>
+                    </div>
+                  </div>
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🌿 주요 여행지 <span class="dest-group-badge">✨ POPULAR</span></div>
+                    <div class="chip-group" id="destination-chips-2">
+                      <span class="chip chip-spot" data-val="제주도">🏝️ 제주도</span>
+                      <span class="chip chip-spot" data-val="강릉">🌊 강릉</span>
+                      <span class="chip chip-spot" data-val="경주">🏛️ 경주</span>
+                      <span class="chip chip-spot" data-val="전주">🍜 전주</span>
+                      <span class="chip chip-spot" data-val="여수">🌅 여수</span>
+                      <span class="chip chip-spot" data-val="속초">🏔️ 속초</span>
+                      <span class="chip chip-spot" data-val="수원">🏰 수원</span>
+                      <span class="chip chip-spot" data-val="춘천">🌲 춘천</span>
+                      <span class="chip chip-spot" data-val="통영">⛵ 통영</span>
+                      <span class="chip chip-spot" data-val="포항">🦞 포항</span>
+                      <span class="chip chip-spot" data-val="남해">🌸 남해</span>
+                      <span class="chip chip-spot" data-val="거제">🏖️ 거제</span>
+                      <span class="chip chip-spot" data-val="가평">🏕️ 가평</span>
+                      <span class="chip chip-spot" data-val="담양">🎋 담양</span>
+                      <span class="chip chip-spot" data-val="강화도">🌾 강화도</span>
+                      <span class="chip chip-spot" data-val="평창">⛷️ 평창</span>
+                    </div>
+                  </div>
+                  <div class="dest-custom-wrap" id="dest-custom-wrap">
+                    <input type="text" class="dest-custom-input" id="dest-custom-input" placeholder="✏️ 직접 입력 (예: 안동, 보령…)" maxlength="12" autocomplete="off" />
+                    <button class="dest-custom-btn" id="dest-custom-btn">추가</button>
+                  </div>
+                  <div id="dest-custom-chips" class="chip-group chip-group-custom"></div>
+                </div>
+
+                <!-- 🇯🇵 일본 -->
+                <div class="region-block" data-country="일본">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🗾 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="일본">
+                      <span class="chip chip-spot" data-val="도쿄">🗼 도쿄</span>
+                      <span class="chip chip-spot" data-val="오사카">🏯 오사카</span>
+                      <span class="chip chip-spot" data-val="교토">⛩️ 교토</span>
+                      <span class="chip chip-spot" data-val="후쿠오카">🍜 후쿠오카</span>
+                      <span class="chip chip-spot" data-val="삿포로">❄️ 삿포로</span>
+                      <span class="chip chip-spot" data-val="나고야">🏙️ 나고야</span>
+                      <span class="chip chip-spot" data-val="나라">🦌 나라</span>
+                      <span class="chip chip-spot" data-val="오키나와">🏝️ 오키나와</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇺🇸 미국 -->
+                <div class="region-block" data-country="미국">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🗽 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="미국">
+                      <span class="chip chip-spot" data-val="뉴욕">🗽 뉴욕</span>
+                      <span class="chip chip-spot" data-val="로스앤젤레스">🎬 LA</span>
+                      <span class="chip chip-spot" data-val="샌프란시스코">🌉 샌프란시스코</span>
+                      <span class="chip chip-spot" data-val="라스베이거스">🎰 라스베이거스</span>
+                      <span class="chip chip-spot" data-val="하와이">🌺 하와이</span>
+                      <span class="chip chip-spot" data-val="시카고">🏙️ 시카고</span>
+                      <span class="chip chip-spot" data-val="마이애미">🏖️ 마이애미</span>
+                      <span class="chip chip-spot" data-val="시애틀">☕ 시애틀</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇫🇷 프랑스 -->
+                <div class="region-block" data-country="프랑스">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🥐 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="프랑스">
+                      <span class="chip chip-spot" data-val="파리">🗼 파리</span>
+                      <span class="chip chip-spot" data-val="니스">🌊 니스</span>
+                      <span class="chip chip-spot" data-val="리옹">🍷 리옹</span>
+                      <span class="chip chip-spot" data-val="마르세유">⛵ 마르세유</span>
+                      <span class="chip chip-spot" data-val="보르도">🍾 보르도</span>
+                      <span class="chip chip-spot" data-val="몽생미셸">🏰 몽생미셸</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇮🇹 이탈리아 -->
+                <div class="region-block" data-country="이탈리아">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🍕 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="이탈리아">
+                      <span class="chip chip-spot" data-val="로마">🏛️ 로마</span>
+                      <span class="chip chip-spot" data-val="피렌체">🎨 피렌체</span>
+                      <span class="chip chip-spot" data-val="베네치아">🚣 베네치아</span>
+                      <span class="chip chip-spot" data-val="밀라노">👗 밀라노</span>
+                      <span class="chip chip-spot" data-val="나폴리">🍕 나폴리</span>
+                      <span class="chip chip-spot" data-val="아말피">🌊 아말피</span>
+                      <span class="chip chip-spot" data-val="시칠리아">🌋 시칠리아</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇪🇸 스페인 -->
+                <div class="region-block" data-country="스페인">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">💃 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="스페인">
+                      <span class="chip chip-spot" data-val="바르셀로나">🏟️ 바르셀로나</span>
+                      <span class="chip chip-spot" data-val="마드리드">🎭 마드리드</span>
+                      <span class="chip chip-spot" data-val="세비야">💃 세비야</span>
+                      <span class="chip chip-spot" data-val="그라나다">🏰 그라나다</span>
+                      <span class="chip chip-spot" data-val="발렌시아">🍊 발렌시아</span>
+                      <span class="chip chip-spot" data-val="이비자">🎵 이비자</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇹🇭 태국 -->
+                <div class="region-block" data-country="태국">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🌴 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="태국">
+                      <span class="chip chip-spot" data-val="방콕">🛕 방콕</span>
+                      <span class="chip chip-spot" data-val="치앙마이">🐘 치앙마이</span>
+                      <span class="chip chip-spot" data-val="푸켓">🏖️ 푸켓</span>
+                      <span class="chip chip-spot" data-val="코사무이">🌺 코사무이</span>
+                      <span class="chip chip-spot" data-val="파타야">🌊 파타야</span>
+                      <span class="chip chip-spot" data-val="끄라비">🧗 끄라비</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇻🇳 베트남 -->
+                <div class="region-block" data-country="베트남">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🍜 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="베트남">
+                      <span class="chip chip-spot" data-val="하노이">🏛️ 하노이</span>
+                      <span class="chip chip-spot" data-val="호치민">🛵 호치민</span>
+                      <span class="chip chip-spot" data-val="다낭">🌊 다낭</span>
+                      <span class="chip chip-spot" data-val="호이안">🏮 호이안</span>
+                      <span class="chip chip-spot" data-val="나트랑">🏖️ 나트랑</span>
+                      <span class="chip chip-spot" data-val="달랏">🌸 달랏</span>
+                      <span class="chip chip-spot" data-val="푸꾸옥">🏝️ 푸꾸옥</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇸🇬 싱가포르 -->
+                <div class="region-block" data-country="싱가포르">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🦁 주요 지구 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="싱가포르">
+                      <span class="chip chip-spot" data-val="마리나베이">🌃 마리나베이</span>
+                      <span class="chip chip-spot" data-val="오차드">🛍️ 오차드</span>
+                      <span class="chip chip-spot" data-val="센토사">🎡 센토사</span>
+                      <span class="chip chip-spot" data-val="차이나타운">🏮 차이나타운</span>
+                      <span class="chip chip-spot" data-val="클락키">🍹 클락키</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇦🇺 호주 -->
+                <div class="region-block" data-country="호주">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🦘 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="호주">
+                      <span class="chip chip-spot" data-val="시드니">🌉 시드니</span>
+                      <span class="chip chip-spot" data-val="멜버른">☕ 멜버른</span>
+                      <span class="chip chip-spot" data-val="브리즈번">🌞 브리즈번</span>
+                      <span class="chip chip-spot" data-val="골드코스트">🏄 골드코스트</span>
+                      <span class="chip chip-spot" data-val="케언즈">🐠 케언즈</span>
+                      <span class="chip chip-spot" data-val="퍼스">🌅 퍼스</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇬🇧 영국 -->
+                <div class="region-block" data-country="영국">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">☂️ 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="영국">
+                      <span class="chip chip-spot" data-val="런던">🎡 런던</span>
+                      <span class="chip chip-spot" data-val="에든버러">🏰 에든버러</span>
+                      <span class="chip chip-spot" data-val="옥스퍼드">🎓 옥스퍼드</span>
+                      <span class="chip chip-spot" data-val="바스">🛁 바스</span>
+                      <span class="chip chip-spot" data-val="맨체스터">⚽ 맨체스터</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇹🇷 튀르키예 -->
+                <div class="region-block" data-country="튀르키예">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🕌 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="튀르키예">
+                      <span class="chip chip-spot" data-val="이스탄불">🕌 이스탄불</span>
+                      <span class="chip chip-spot" data-val="카파도키아">🎈 카파도키아</span>
+                      <span class="chip chip-spot" data-val="안탈리아">🏖️ 안탈리아</span>
+                      <span class="chip chip-spot" data-val="에페소스">🏛️ 에페소스</span>
+                      <span class="chip chip-spot" data-val="파묵칼레">♨️ 파묵칼레</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇨🇭 스위스 -->
+                <div class="region-block" data-country="스위스">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🏔️ 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="스위스">
+                      <span class="chip chip-spot" data-val="취리히">🏙️ 취리히</span>
+                      <span class="chip chip-spot" data-val="제네바">🕊️ 제네바</span>
+                      <span class="chip chip-spot" data-val="루체른">🌉 루체른</span>
+                      <span class="chip chip-spot" data-val="인터라켄">🏔️ 인터라켄</span>
+                      <span class="chip chip-spot" data-val="체르마트">⛷️ 체르마트</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇬🇷 그리스 -->
+                <div class="region-block" data-country="그리스">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🏛️ 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="그리스">
+                      <span class="chip chip-spot" data-val="아테네">🏛️ 아테네</span>
+                      <span class="chip chip-spot" data-val="산토리니">🌅 산토리니</span>
+                      <span class="chip chip-spot" data-val="미코노스">💃 미코노스</span>
+                      <span class="chip chip-spot" data-val="크레타">🫒 크레타</span>
+                      <span class="chip chip-spot" data-val="로도스">🏰 로도스</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇵🇹 포르투갈 -->
+                <div class="region-block" data-country="포르투갈">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🐟 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="포르투갈">
+                      <span class="chip chip-spot" data-val="리스본">🚋 리스본</span>
+                      <span class="chip chip-spot" data-val="포르투">🍷 포르투</span>
+                      <span class="chip chip-spot" data-val="신트라">🏰 신트라</span>
+                      <span class="chip chip-spot" data-val="알가르베">🏖️ 알가르베</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 🇨🇦 캐나다 -->
+                <div class="region-block" data-country="캐나다">
+                  <div class="dest-group-wrap">
+                    <div class="dest-group-title">🍁 인기 도시 <span class="dest-group-badge">POPULAR</span></div>
+                    <div class="chip-group dest-overseas-chips" data-country="캐나다">
+                      <span class="chip chip-spot" data-val="밴쿠버">🌲 밴쿠버</span>
+                      <span class="chip chip-spot" data-val="토론토">🏙️ 토론토</span>
+                      <span class="chip chip-spot" data-val="퀘벡시티">🏰 퀘벡시티</span>
+                      <span class="chip chip-spot" data-val="밴프">🏔️ 밴프</span>
+                      <span class="chip chip-spot" data-val="몬트리올">🎶 몬트리올</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /dest-region-panel -->
+            </div>
+
+            <!-- 동행 -->
+            <div class="form-group">
+              <label>👥 동행
+                <span class="chip-group-hint">최대 1개 선택</span>
+              </label>
+              <div class="chip-group" id="companion-chips">
+                <span class="chip" data-val="혼자">🧍 혼자</span>
+                <span class="chip" data-val="연인">💑 연인</span>
+                <span class="chip" data-val="친구">👫 친구</span>
+                <span class="chip" data-val="가족">👨‍👩‍👧 가족</span>
+                <span class="chip" data-val="동료">💼 동료</span>
+                <span class="chip" data-val="부모님">👴 부모님</span>
+              </div>
+              <div class="chip-custom-wrap" id="companion-custom-wrap">
+                <input type="text" class="chip-custom-input" id="companion-custom-input" placeholder="✏️ 직접 입력 (예: 반려동물, 신혼여행…)" maxlength="10" />
+                <button class="chip-custom-add-btn" id="companion-custom-btn">추가</button>
+              </div>
+              <div class="chip-group chip-group-custom" id="companion-custom-chips"></div>
+            </div>
+
+            <!-- 테마 -->
+            <div class="form-group">
+              <label>🎨 테마
+                <span class="chip-group-hint">복수 선택 가능</span>
+              </label>
+              <div class="chip-group" id="theme-chips">
+                <span class="chip" data-val="맛집탐방">🍽️ 맛집탐방</span>
+                <span class="chip" data-val="포토스팟">📸 포토스팟</span>
+                <span class="chip" data-val="액티비티">🏄 액티비티</span>
+                <span class="chip" data-val="힐링">🧘 힐링</span>
+                <span class="chip" data-val="역사탐방">🏛️ 역사탐방</span>
+                <span class="chip" data-val="쇼핑">🛍️ 쇼핑</span>
+                <span class="chip" data-val="카페투어">☕ 카페투어</span>
+                <span class="chip" data-val="야경">🌙 야경</span>
+                <span class="chip" data-val="드라이브">🚘 드라이브</span>
+                <span class="chip" data-val="글램핑">⛺ 글램핑</span>
+                <span class="chip" data-val="온천·스파">♨️ 온천·스파</span>
+                <span class="chip" data-val="전시·문화">🎭 전시·문화</span>
+              </div>
+              <div class="chip-custom-wrap" id="theme-custom-wrap">
+                <input type="text" class="chip-custom-input" id="theme-custom-input" placeholder="✏️ 직접 입력 (예: 서핑, 낚시, 독서…)" maxlength="10" />
+                <button class="chip-custom-add-btn" id="theme-custom-btn">추가</button>
+              </div>
+              <div class="chip-group chip-group-custom" id="theme-custom-chips"></div>
+            </div>
+            <div class="form-group">
+              <label>💰 예산 (1인 기준) <span style="font-size:0.72rem; color:var(--text-muted); font-weight:400;">— 슬라이더로 조절하면 등급이 바뀌어요!</span></label>
+              <div class="budget-slider-wrap">
+                <input type="range" class="budget-slider" id="budget-slider" min="200000" max="5000000" step="50000" value="500000" />
+                <!-- 눈금 마커 -->
+                <div class="budget-ticks">
+                  <span class="budget-tick" data-val="200000">20만</span>
+                  <span class="budget-tick" data-val="300000">30만</span>
+                  <span class="budget-tick" data-val="500000">50만</span>
+                  <span class="budget-tick" data-val="1000000">100만</span>
+                  <span class="budget-tick" data-val="2000000">200만</span>
+                  <span class="budget-tick" data-val="3000000">300만</span>
+                  <span class="budget-tick" data-val="5000000">500만+</span>
+                </div>
+                <div class="budget-display">
+                  <span id="budget-label">₩ 500,000</span>
+                  <span class="budget-hint" id="budget-hint">숙박 포함</span>
+                </div>
+              </div>
+              <!-- 현재 등급 인디케이터 -->
+              <div class="budget-tier-indicator" id="budget-tier-indicator">
+                <div class="bti-icon" id="bti-icon">🟣</div>
+                <div class="bti-info">
+                  <span class="bti-grade" id="bti-grade">컴포트</span>
+                  <span class="bti-desc" id="bti-desc">2박 3일 · 비즈니스 호텔 · 맛집 코스 (50~200만원)</span>
+                </div>
+                <div class="bti-arrow" id="bti-range"></div>
+              </div>
+            </div>
+            <!-- 날짜 선택 -->
+            <div class="form-group">
+              <label>📅 여행 날짜</label>
+              <div class="date-picker-wrap">
+                <div class="date-fields">
+                  <div class="date-field" id="date-start-field">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div class="date-field-text">
+                      <span class="date-field-label">출발일</span>
+                      <span class="date-field-val" id="date-start-display">날짜 선택</span>
+                    </div>
+                  </div>
+                  <div class="date-arrow">→</div>
+                  <div class="date-field" id="date-end-field">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="date-field-text">
+                      <span class="date-field-label">귀환일</span>
+                      <span class="date-field-val" id="date-end-display">날짜 선택</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="date-nights-badge" id="date-nights-badge" style="display:none;">
+                  <i class="fas fa-moon"></i>
+                  <span id="date-nights-text">1박 2일</span>
+                </div>
+                <!-- 달력 팝업 -->
+                <div class="calendar-popup" id="calendar-popup">
+                  <div class="cal-header">
+                    <button class="cal-nav" id="cal-prev"><i class="fas fa-chevron-left"></i></button>
+                    <span class="cal-month-label" id="cal-month-label"></span>
+                    <button class="cal-nav" id="cal-next"><i class="fas fa-chevron-right"></i></button>
+                  </div>
+                  <div class="cal-weekdays">
+                    <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+                  </div>
+                  <div class="cal-grid" id="cal-grid"></div>
+                  <div class="cal-footer">
+                    <span id="cal-hint">출발일을 선택하세요</span>
+                    <button class="cal-reset" id="cal-reset">초기화</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>🚗 이동 수단
+                <span class="chip-group-hint">복수 선택 가능</span>
+              </label>
+              <div class="chip-group" id="transport-chips">
+                <span class="chip" data-val="도보">🚶 도보</span>
+                <span class="chip" data-val="대중교통">🚌 대중교통</span>
+                <span class="chip" data-val="자가용">🚗 자가용</span>
+                <span class="chip" data-val="택시">🚕 택시</span>
+                <span class="chip" data-val="기차·KTX">🚄 기차·KTX</span>
+                <span class="chip" data-val="버스">🚍 버스</span>
+                <span class="chip" data-val="비행기">✈️ 비행기</span>
+                <span class="chip" data-val="렌터카">🔑 렌터카</span>
+                <span class="chip" data-val="자전거">🚲 자전거</span>
+                <span class="chip" data-val="선박·페리">⛴️ 선박·페리</span>
+                <span class="chip" data-val="오토바이">🛵 오토바이</span>
+              </div>
+            </div>
+            <div class="plan-btn-group">
+              <button class="btn btn-primary btn-full" id="generate-btn">
+                <i class="fas fa-magic"></i> 플랜 생성하기
+                <span class="btn-sub-hint">목적지·동행·테마·날짜 모두 선택 필요</span>
+              </button>
+              <div class="plan-btn-divider"><span>또는</span></div>
+              <button class="btn btn-mystery btn-full" id="mystery-btn">
+                <i class="fas fa-dice"></i> 🎲 미스터리 트립!
+                <span class="btn-sub-hint">예산만 설정하면 랜덤 코스 완성</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 결과 패널 -->
+        <div class="demo-result" data-aos="fade-left">
+          <div class="result-header">
+            <h3 id="result-title">여행 플랜</h3>
+            <span class="result-badge" id="result-badge"></span>
+          </div>
+          <div class="result-content" id="result-content">
+            <div class="result-empty">
+              <i class="fas fa-map-marked-alt"></i>
+              <p>목적지·동행·테마·날짜·이동수단<br />을 선택하고<br /><strong>플랜 생성하기</strong>를 눌러보세요!</p>
+              <div class="result-empty-tips">
+                <span>🎲 랜덤 여행은 <b>미스터리 트립</b> 클릭!</span>
+              </div>
+            </div>
+          </div>
+          <!-- 지도/플로우 영역 -->
+          <div class="map-section" id="map-section" style="display:none;">
+            <div class="map-section-header">
+              <span><i class="fas fa-route"></i> 여행 동선</span>
+              <div class="map-tabs">
+                <button class="map-tab active" data-tab="flow">📋 여행 플로우</button>
+                <button class="map-tab" data-tab="map">🗺️ 실제 지도</button>
+              </div>
+            </div>
+            <!-- 탭 1: 타임라인 플로우 -->
+            <div class="flow-panel" id="flow-panel"></div>
+            <!-- 탭 2: Leaflet 실제 지도 -->
+            <div class="map-container leaflet-wrap" id="map-container" style="display:none;"></div>
+            <!-- 지도 로딩 상태 -->
+            <div class="map-loading" id="map-loading" style="display:none;">
+              <div class="map-loading-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <p>지도 불러오는 중…</p>
+            </div>
+          </div>
+          <div class="result-actions" id="result-actions" style="display:none;">
+            <button class="btn btn-outline" id="reroll-btn">
+              <i class="fas fa-sync-alt"></i> 일부 Reroll
+            </button>
+            <button class="btn btn-primary" id="confirm-btn">
+              <i class="fas fa-check"></i> 일정 확정하기
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== VIBE CHECK ========== -->
+  <section class="vibe-section">
+    <div class="section-container">
+      <div class="vibe-grid">
+        <div class="vibe-text" data-aos="fade-right">
+          <span class="section-tag">Vibe Check ✅</span>
+          <h2>광고 말고,<br /><span class="gradient-text">진짜 후기</span>만</h2>
+          <p>광고성 블로그가 아닌 실제 방문자 리뷰의 감성 키워드를 분석하여 당신의 여행 스타일에 맞는 장소만 큐레이션합니다.</p>
+          <div class="vibe-keywords">
+            <span class="vibe-kw kw-1">🤫 조용한</span>
+            <span class="vibe-kw kw-2">📸 사진 잘 나오는</span>
+            <span class="vibe-kw kw-3">👨‍👩‍👧 부모님과 함께</span>
+            <span class="vibe-kw kw-4">🍽️ 로컬 맛집</span>
+            <span class="vibe-kw kw-5">🌅 뷰 맛집</span>
+            <span class="vibe-kw kw-6">💰 가성비</span>
+            <span class="vibe-kw kw-7">✨ 힙한</span>
+            <span class="vibe-kw kw-8">🐾 반려동물</span>
+          </div>
+        </div>
+        <div class="vibe-visual" data-aos="fade-left">
+          <div class="vibe-card-stack">
+            <div class="vibe-place-card vc-1">
+              <div class="vp-img vp-img-1"></div>
+              <div class="vp-info">
+                <p class="vp-name">제주 협재 해변 카페</p>
+                <p class="vp-loc"><i class="fas fa-map-marker-alt"></i> 제주 한림읍</p>
+                <div class="vp-vibes">
+                  <span>📸 사진 잘 나오는</span>
+                  <span>🌅 뷰 맛집</span>
+                </div>
+                <div class="vp-score">
+                  <span class="score-bar" style="--score: 96%"></span>
+                  <span class="score-num">96%</span>
+                  <span class="score-label">Vibe 일치</span>
+                </div>
+              </div>
+            </div>
+            <div class="vibe-place-card vc-2">
+              <div class="vp-img vp-img-2"></div>
+              <div class="vp-info">
+                <p class="vp-name">부산 흰여울 문화마을</p>
+                <p class="vp-loc"><i class="fas fa-map-marker-alt"></i> 부산 영도구</p>
+                <div class="vp-vibes">
+                  <span>🤫 조용한</span>
+                  <span>✨ 힙한</span>
+                </div>
+                <div class="vp-score">
+                  <span class="score-bar" style="--score: 89%"></span>
+                  <span class="score-num">89%</span>
+                  <span class="score-label">Vibe 일치</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PRICING ========== -->
+  <section class="pricing" id="pricing">
+    <div class="section-container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">요금제</span>
+        <h2>나에게 딱 맞는<br /><span class="gradient-text">플랜을 선택하세요</span></h2>
+        <p class="section-sub">Pro와 Team은 단순한 요금제가 아닙니다.<br>더 깊고, 더 넓고, 더 함께하는 여행 경험입니다.</p>
+      </div>
+      <div class="pricing-grid">
+
+        <!-- FREE -->
+        <div class="pricing-card" data-aos="fade-up" data-delay="0">
+          <div class="plan-icon">🗺️</div>
+          <div class="plan-name">Free</div>
+          <div class="plan-price">₩ 0 <span>/ 월</span></div>
+          <p class="plan-desc">여행이 처음이라면,<br>부담 없이 시작해보세요.</p>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> 월 3회 플래닝</li>
+            <li><i class="fas fa-check"></i> 기본 필터 (장소·날짜)</li>
+            <li><i class="fas fa-check"></i> Vibe Check 기본</li>
+            <li class="disabled"><i class="fas fa-times"></i> 미스터리 트립</li>
+            <li class="disabled"><i class="fas fa-times"></i> Reroll 기능</li>
+            <li class="disabled"><i class="fas fa-times"></i> 통합 예약</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-full">무료 시작</a>
+        </div>
+
+        <!-- PRO -->
+        <div class="pricing-card pricing-pro" data-aos="fade-up" data-delay="100">
+          <div class="popular-badge">가장 인기 🔥</div>
+          <div class="plan-icon plan-icon-pro">⚡</div>
+          <div class="plan-name plan-name-pro">Pro</div>
+          <div class="plan-price plan-price-pro">₩ 9,900 <span>/ 월</span></div>
+          <p class="plan-desc plan-desc-pro">여행 고수의 선택.<br>모든 기능을 무제한으로.</p>
+          <ul class="plan-features plan-features-pro">
+            <li><i class="fas fa-check"></i> 무제한 플래닝</li>
+            <li><i class="fas fa-check"></i> 5가지 전체 필터</li>
+            <li><i class="fas fa-check"></i> Vibe Check 고급</li>
+            <li><i class="fas fa-check"></i> 미스터리 트립</li>
+            <li><i class="fas fa-check"></i> 무제한 Reroll</li>
+            <li><i class="fas fa-check"></i> 통합 예약</li>
+          </ul>
+          <a href="#" class="btn btn-pro btn-full">⚡ Pro 시작하기</a>
+        </div>
+
+        <!-- TEAM -->
+        <div class="pricing-card pricing-team" data-aos="fade-up" data-delay="200">
+          <div class="team-crown">👑 BEST DEAL</div>
+          <div class="plan-icon plan-icon-team">🚀</div>
+          <div class="plan-name plan-name-team">Team</div>
+          <div class="plan-price plan-price-team">
+            ₩ 19,900
+            <span class="plan-per">/ 월</span>
+            <div class="plan-save-badge">인당 최대 60% 절약</div>
+          </div>
+          <p class="plan-desc plan-desc-team">친구·연인·가족과 함께.<br>단체 여행의 모든 것을 한 곳에.</p>
+          <ul class="plan-features plan-features-team">
+            <li><i class="fas fa-check"></i> Pro 전체 기능 포함</li>
+            <li><i class="fas fa-users"></i> 최대 10인 팀 공유 플래닝</li>
+            <li><i class="fas fa-vote-yea"></i> 실시간 투표·의사결정</li>
+            <li><i class="fas fa-tags"></i> 단체 예약 최대 15% 할인</li>
+            <li><i class="fas fa-comments"></i> 그룹 채팅 & 여행 메모</li>
+            <li><i class="fas fa-headset"></i> 24/7 전담 고객 지원</li>
+            <li><i class="fas fa-star"></i> AI 그룹 취향 분석</li>
+            <li><i class="fas fa-gift"></i> 멤버 초대 보너스 제공</li>
+          </ul>
+          <a href="#" class="btn btn-team btn-full">🚀 Team 지금 시작하기</a>
+          <p class="team-members-hint"><i class="fas fa-user-friends"></i> 현재 <strong>2,140팀</strong>이 함께 여행 중</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section class="testimonials">
+    <div class="section-container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">사용자 후기</span>
+        <h2><span class="gradient-text">실제 여행자</span>들의 이야기</h2>
+      </div>
+      <div class="testimonials-track" id="testimonials-track">
+        <div class="testi-slide">
+          <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p>"여행 계획에 3시간씩 걸리던 게 이제 10분도 안 걸려요. 미스터리 트립으로 갔다가 인생 카페 발견했어요!"</p>
+            <div class="testi-user">
+              <div class="testi-avatar av-1">김</div>
+              <div>
+                <p>김민지</p>
+                <small>서울 · 솔로 여행자</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-slide">
+          <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p>"Reroll 기능이 진짜 꿀이에요. 친구들이랑 맛집만 계속 바꿔가면서 모두가 만족하는 플랜 완성!"</p>
+            <div class="testi-user">
+              <div class="testi-avatar av-2">박</div>
+              <div>
+                <p>박준혁</p>
+                <small>부산 · 친구 여행</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-slide">
+          <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p>"Vibe Check 덕분에 블로그 광고에 속지 않게 됐어요. '조용한' 키워드로 찾은 카페는 진짜 조용했어요!"</p>
+            <div class="testi-user">
+              <div class="testi-avatar av-3">이</div>
+              <div>
+                <p>이수아</p>
+                <small>제주 · 커플 여행</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-slide">
+          <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p>"가족 여행 계획이 너무 힘들었는데 TripPick으로 부모님 입맛에 맞는 완벽한 경주 일정 완성! 강추입니다."</p>
+            <div class="testi-user">
+              <div class="testi-avatar av-4">최</div>
+              <div>
+                <p>최하늘</p>
+                <small>서울 · 가족 여행</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-dots" id="testi-dots">
+        <span class="dot active" data-idx="0"></span>
+        <span class="dot" data-idx="1"></span>
+        <span class="dot" data-idx="2"></span>
+        <span class="dot" data-idx="3"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA BAND ========== -->
+  <section class="cta-band">
+    <div class="cta-band-bg">
+      <div class="cta-blob"></div>
+    </div>
+    <div class="cta-content" data-aos="fade-up">
+      <h2>지금 바로 시작하세요.<br />첫 여행 플랜은 <span>무료</span>입니다.</h2>
+      <p>고민은 TripPick이, 짐은 당신이.</p>
+      <div class="cta-buttons">
+        <a href="#demo" class="btn btn-white">
+          <i class="fas fa-rocket"></i> 무료로 플래닝하기
+        </a>
+        <a href="#features" class="btn btn-ghost-white">더 알아보기 →</a>
+      </div>
+      <div class="app-badges">
+        <div class="app-badge">
+          <i class="fab fa-apple"></i>
+          <div><small>App Store에서</small><span>Download</span></div>
+        </div>
+        <div class="app-badge">
+          <i class="fab fa-google-play"></i>
+          <div><small>Google Play에서</small><span>Download</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <span class="logo-icon">✈</span>
+          <span>Trip<span class="accent">Pick</span></span>
+        </a>
+        <p>고민은 TripPick이, 짐은 당신이.<br />탭 한 번으로 완성되는 맞춤형 여행 플래너.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>서비스</h4>
+          <ul>
+            <li><a href="#">맞춤 필터링</a></li>
+            <li><a href="#">미스터리 트립</a></li>
+            <li><a href="#">Reroll</a></li>
+            <li><a href="#">통합 예약</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>회사</h4>
+          <ul>
+            <li><a href="#">소개</a></li>
+            <li><a href="#">블로그</a></li>
+            <li><a href="#">채용</a></li>
+            <li><a href="#">파트너</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>지원</h4>
+          <ul>
+            <li><a href="#">고객센터</a></li>
+            <li><a href="#">이용약관</a></li>
+            <li><a href="#">개인정보처리방침</a></li>
+            <li><a href="#">문의하기</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 TripPick. All rights reserved. Designed by 최하늘.</p>
+    </div>
+  </footer>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirm-modal">
+    <div class="modal">
+      <div class="modal-icon">🎉</div>
+      <h3>일정이 확정되었습니다!</h3>
+      <p>숙소, 식당, 액티비티 예약 요청이<br />모두 접수되었어요.</p>
+      <div class="modal-detail">
+        <span><i class="fas fa-hotel"></i> 숙소 예약 완료</span>
+        <span><i class="fas fa-utensils"></i> 식당 예약 완료</span>
+        <span><i class="fas fa-hiking"></i> 액티비티 확정</span>
+      </div>
+      <button class="btn btn-primary btn-full" id="modal-close">확인</button>
+    </div>
+  </div>
+
+  </div><!-- /#home-scroll-content -->
+    </div><!-- /#tab-home -->
+
+    <!-- ── TAB: 플래닝 (+) ── -->
+    <div class="app-tab" id="tab-plan" data-tab="plan">
+      <!-- 기존 데모 섹션 전체를 여기에 이식 -->
+      <div class="plan-tab-inner" id="planTabInner">
+        <!-- 플래닝 탭 헤더 -->
+        <div class="plan-tab-header">
+          <h2 class="plan-tab-title"><i class="fas fa-route"></i> 여행 플래닝</h2>
+          <p class="plan-tab-sub">목적지부터 일정까지, 단 3초에 완성</p>
+        </div>
+        <!-- 기존 데모 섹션 내용 (id=demo) -->
+        <div id="demo-embed"></div>
+      </div>
+    </div><!-- /#tab-plan -->
+
+    <!-- ── TAB: 검색 ── -->
+    <div class="app-tab" id="tab-search" data-tab="search">
+      <div class="coming-soon-wrap">
+        <div class="coming-soon-card">
+          <div class="cs-icon">🔍</div>
+          <h3>검색 기능</h3>
+          <p>곧 출시될 예정이에요.<br/>조금만 기다려 주세요!</p>
+          <div class="cs-badge">Coming Soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: 하트 (저장) ── -->
+    <div class="app-tab" id="tab-heart" data-tab="heart">
+      <div class="coming-soon-wrap">
+        <div class="coming-soon-card">
+          <div class="cs-icon">❤️</div>
+          <h3>저장한 여행</h3>
+          <p>마음에 드는 플랜을<br/>저장하고 모아볼 수 있어요.</p>
+          <div class="cs-badge">Coming Soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: 마이페이지 ── -->
+    <div class="app-tab" id="tab-mypage" data-tab="mypage">
+      <div class="mypage-wrap" id="mypageWrap">
+        <!-- 로그인 전 화면 -->
+        <div class="auth-screen" id="authScreen">
+          <div class="auth-logo">
+            <span class="logo-icon">✈</span>
+            <span>Trip<span class="accent">Pick</span></span>
+          </div>
+          <p class="auth-tagline">더 스마트한 여행의 시작</p>
+
+          <!-- 탭 전환 (로그인 / 회원가입) -->
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" id="authLoginTab">로그인</button>
+            <button class="auth-tab-btn" id="authSignupTab">회원가입</button>
+          </div>
+
+          <!-- 로그인 폼 -->
+          <form class="auth-form" id="loginForm">
+            <div class="auth-field">
+              <i class="fas fa-envelope"></i>
+              <input type="email" placeholder="이메일 주소" autocomplete="email" />
+            </div>
+            <div class="auth-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="비밀번호" autocomplete="current-password" />
+            </div>
+            <button type="submit" class="btn-auth-primary">로그인</button>
+            <p class="auth-divider"><span>또는 간편 로그인</span></p>
+            <div class="social-auth">
+              <button type="button" class="social-btn kakao"><i class="fas fa-comment"></i> 카카오로 시작</button>
+              <button type="button" class="social-btn google"><i class="fab fa-google"></i> Google로 시작</button>
+              <button type="button" class="social-btn apple"><i class="fab fa-apple"></i> Apple로 시작</button>
+            </div>
+          </form>
+
+          <!-- 회원가입 폼 (숨김) -->
+          <form class="auth-form hidden" id="signupForm">
+            <div class="auth-field">
+              <i class="fas fa-user"></i>
+              <input type="text" placeholder="닉네임" autocomplete="nickname" />
+            </div>
+            <div class="auth-field">
+              <i class="fas fa-envelope"></i>
+              <input type="email" placeholder="이메일 주소" autocomplete="email" />
+            </div>
+            <div class="auth-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="비밀번호 (8자 이상)" autocomplete="new-password" />
+            </div>
+            <div class="auth-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="비밀번호 확인" autocomplete="new-password" />
+            </div>
+            <button type="submit" class="btn-auth-primary">회원가입</button>
+            <p class="auth-divider"><span>또는 간편 가입</span></p>
+            <div class="social-auth">
+              <button type="button" class="social-btn kakao"><i class="fas fa-comment"></i> 카카오로 시작</button>
+              <button type="button" class="social-btn google"><i class="fab fa-google"></i> Google로 시작</button>
+              <button type="button" class="social-btn apple"><i class="fab fa-apple"></i> Apple로 시작</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div><!-- /#tab-mypage -->
+
+  </main><!-- /#appMain -->
+
+  <!-- ══════════════════════════════════════════
+       📱 하단 네비게이션 바 (Bottom Navigation)
+       ══════════════════════════════════════════ -->
+  <nav class="app-bottom-navbar" id="appBottomNav">
+    <button class="bnav-btn active" data-target="home" aria-label="홈">
+      <i class="fas fa-home"></i>
+      <span>홈</span>
+    </button>
+    <button class="bnav-btn" data-target="search" aria-label="검색">
+      <i class="fas fa-search"></i>
+      <span>검색</span>
+    </button>
+    <button class="bnav-btn bnav-plus" data-target="plan" id="bnavPlus" aria-label="플래닝">
+      <div class="plus-ring">
+        <i class="fas fa-plus"></i>
+      </div>
+      <span>플래닝</span>
+    </button>
+    <button class="bnav-btn" data-target="heart" aria-label="저장">
+      <i class="fas fa-heart"></i>
+      <span>저장</span>
+    </button>
+    <button class="bnav-btn" data-target="mypage" aria-label="마이페이지">
+      <i class="fas fa-user"></i>
+      <span>마이</span>
+    </button>
+  </nav>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirm-modal">
+    <div class="modal">
+      <div class="modal-icon">🎉</div>
+      <h3>일정이 확정되었습니다!</h3>
+      <p>숙소, 식당, 액티비티 예약 요청이<br />모두 접수되었어요.</p>
+      <div class="modal-detail">
+        <span><i class="fas fa-hotel"></i> 숙소 예약 완료</span>
+        <span><i class="fas fa-utensils"></i> 식당 예약 완료</span>
+        <span><i class="fas fa-hiking"></i> 액티비티 확정</span>
+      </div>
+      <button class="btn btn-primary btn-full" id="modal-close">확인</button>
+    </div>
+  </div>
+
+  <!-- Leaflet → main.js → travelData.js → overseas-data.js 순서 보장 -->
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/travelData.js"></script>
+  <script src="js/overseas-data.js"></script>
+  <script src="js/overseas-data-patch.js"></script>
+  <script src="js/app-ui.js"></script>
+</body>
+</html>
