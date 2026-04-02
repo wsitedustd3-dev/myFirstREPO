@@ -44,3 +44,7 @@
 ---
 
 > **Tip:** 정보를 널리 퍼뜨리고 싶다면 **웹**, 최고의 성능이 필요하다면 **앱**, 설치 없이 앱의 기능을 제공하고 싶다면 **웹앱**을 선택하세요!
+
+그림은 복붙 할 수 있어요 
+<img width="1076" height="565" alt="image" src="https://github.com/user-attachments/assets/9e74f404-e668-4877-bdad-4fd375e2910a" />
+
