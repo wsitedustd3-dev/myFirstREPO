@@ -166,3 +166,6 @@ README.md
 4. **날씨 연동**: OpenWeatherMap API로 선택 날짜 날씨 예보 표시
 5. **카카오 공유**: 카카오톡 링크 공유 기능
 6. **후기 시스템**: Table API로 방문 후기 작성/조회
+
+## 실행 
+https://wsitedustd3-dev.github.io/myFirstREPO/
